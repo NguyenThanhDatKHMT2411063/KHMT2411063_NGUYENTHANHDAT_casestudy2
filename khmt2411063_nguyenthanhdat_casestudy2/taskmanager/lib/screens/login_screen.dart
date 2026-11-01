@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'register_screen.dart';
+import 'home_screen.dart'; // Import màn hình Home sau khi đăng nhập thành công
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -31,8 +32,19 @@ class _LoginScreenState extends State<LoginScreen> {
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
+        final userId = data['user']['id'];
+        final userName = data['user']['name'];
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(data['message'] ?? 'Đăng nhập thành công!')),
+        );
+
+        // Chuyển hướng sang màn hình Home và truyền thông tin user sang
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(userId: userId, userName: userName),
+          ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
