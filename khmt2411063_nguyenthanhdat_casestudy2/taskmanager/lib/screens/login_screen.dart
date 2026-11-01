@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,9 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
 
   Future<void> _login() async {
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() { _isLoading = true; });
 
     try {
       final response = await http.post(
@@ -33,11 +32,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Đăng nhập thành công!')),
+          SnackBar(content: Text(data['message'] ?? 'Đăng nhập thành công!')),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(data['message'] ?? 'Đăng nhập thất bại')),
+          SnackBar(content: Text(data['message'] ?? 'Đăng nhập thất bại!')),
         );
       }
     } catch (e) {
@@ -45,9 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
         SnackBar(content: Text('Lỗi kết nối server: $e')),
       );
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      setState(() { _isLoading = false; });
     }
   }
 
@@ -71,12 +68,21 @@ class _LoginScreenState extends State<LoginScreen> {
               decoration: const InputDecoration(labelText: 'Mật khẩu'),
               obscureText: true,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             _isLoading
                 ? const CircularProgressIndicator()
                 : ElevatedButton(
               onPressed: _login,
               child: const Text('Đăng Nhập'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                );
+              },
+              child: const Text('Chưa có tài khoản? Đăng ký ngay'),
             ),
           ],
         ),
